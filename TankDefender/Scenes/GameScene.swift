@@ -7,11 +7,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hero: Hero!
     var joystick: Joystick!
     var backgroundMusicPlayer: AVAudioPlayer?
+    var cameraNode: SKCameraNode!
 
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
         physicsWorld.gravity = .zero
+        
+        cameraNode = SKCameraNode()
+        self.camera = cameraNode
+        addChild(cameraNode)
 
         setupBackground()
         setupHero()
@@ -40,11 +45,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func setupBackground() {
         let bg = SKSpriteNode(imageNamed: "Background")
-        bg.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        bg.position = CGPoint(x: 0, y: 0)  // Center of the world
         bg.zPosition = -1
-        bg.size = self.size
+        bg.size = CGSize(width: 10000, height: 10000)  // Large enough to scroll
         addChild(bg)
     }
+
 
 
     func setupHero() {
@@ -55,9 +61,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func setupJoystick() {
         joystick = Joystick()
-        joystick.position = CGPoint(x: 100, y: 100)
-        addChild(joystick)
+        joystick.position = CGPoint(x: -size.width / 2 + 100, y: -size.height / 2 + 100)
+        cameraNode.addChild(joystick)
     }
+
 
     func spawnEnemies() {
         // Add logic to spawn enemies periodically
@@ -65,7 +72,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     override func update(_ currentTime: TimeInterval) {
         hero.update(joystick: joystick)
+        cameraNode.position = hero.position
     }
+
 
     func didBegin(_ contact: SKPhysicsContact) {
         // Handle collisions
