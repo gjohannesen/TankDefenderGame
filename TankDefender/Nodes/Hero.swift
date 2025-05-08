@@ -17,6 +17,8 @@ class Hero: SKSpriteNode {
         self.physicsBody?.isDynamic = true
         self.physicsBody?.categoryBitMask = PhysicsCategory.hero
         self.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
+        physicsBody?.contactTestBitMask = PhysicsCategory.fruit
+        physicsBody?.collisionBitMask = 0
         self.physicsBody?.collisionBitMask = PhysicsCategory.none
         self.physicsBody?.affectedByGravity = false
 
